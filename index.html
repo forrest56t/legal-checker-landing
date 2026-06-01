@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Юридический ОТК — первичный контроль договора аренды</title>
+  <meta name="description" content="Демо первичного контроля договора аренды: система показывает возможные риски, спорные условия и вопросы, которые стоит проверить юристу." />
+  <meta property="og:title" content="Юридический ОТК — первичный контроль договора аренды" />
+  <meta property="og:description" content="Интерактивное демо первичной карты рисков по договору аренды." />
+  <style>
+    :root {
+      --bg: #09090b;
+      --surface: #111113;
+      --surface-2: #18181b;
+      --border: #27272a;
+      --border-2: #3f3f46;
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+      --muted-2: #71717a;
+      --purple: #8b5cf6;
+      --purple-2: #7c3aed;
+      --danger: #f87171;
+      --warn: #fbbf24;
+      --ok: #34d399;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --shadow: 0 18px 50px rgba(124, 58, 237, .24);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      color: var(--text);
+      background: radial-gradient(1000px 500px at 80% -20%, rgba(139, 92, 246, .22), transparent 55%), var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      line-height: 1.45;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(1180px, 96vw);
+      margin: 0 auto;
+    }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(10px);
+      background: rgba(9, 9, 11, .72);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-wrap {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+
+    .brand-dot {
+      inline-size: 10px;
+      block-size: 10px;
+      border-radius: 999px;
+      background: linear-gradient(140deg, var(--purple), #a78bfa);
+      box-shadow: 0 0 18px rgba(139, 92, 246, .9);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: 1px solid var(--border-2);
+      min-height: 42px;
+      padding: 0 18px;
+      color: var(--text);
+      background: rgba(24, 24, 27, .9);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .btn:hover { border-color: #66667a; transform: translateY(-1px); }
+
+    .btn-primary {
+      background: linear-gradient(140deg, var(--purple), var(--purple-2));
+      border-color: rgba(139, 92, 246, .8);
+      box-shadow: 0 8px 24px rgba(124, 58, 237, .35);
+    }
+
+    .hero {
+      padding: 86px 0 66px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #ddd6fe;
+      border: 1px solid rgba(139, 92, 246, .45);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(139, 92, 246, .12);
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: clamp(30px, 4.4vw, 52px);
+      line-height: 1.05;
+      letter-spacing: -.02em;
+    }
+
+    .hero p {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .accent-line {
+      margin: 0 0 24px;
+      color: #ddd6fe;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .trust-items {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .trust-item {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(24, 24, 27, .6);
+      color: var(--muted);
+      font-size: 13px;
+      padding: 8px 11px;
+      text-align: center;
+    }
+
+    .demo-card {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(24,24,27,.92), rgba(17,17,19,.92));
+      border-radius: var(--radius-lg);
+      padding: 0;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .demo-topbar {
+      min-height: 44px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      background: rgba(10, 10, 12, .75);
+    }
+
+    .mac-dots { display: flex; gap: 7px; }
+    .mac-dots span {
+      inline-size: 10px;
+      block-size: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    .mac-dots .r { background: #f87171; }
+    .mac-dots .y { background: #fbbf24; }
+    .mac-dots .g { background: #34d399; }
+
+    .demo-topbar small { color: var(--muted-2); }
+
+    .demo-body { padding: 16px; }
+
+    .demo-note {
+      border: 1px dashed var(--border-2);
+      border-radius: var(--radius-md);
+      color: var(--muted);
+      font-size: 13px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      background: rgba(24, 24, 27, .55);
+    }
+
+    .counters {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .counter {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(24, 24, 27, .82);
+      padding: 10px;
+    }
+
+    .counter .label { font-size: 12px; color: var(--muted-2); margin-bottom: 4px; }
+    .counter .value { font-size: 18px; font-weight: 700; }
+    .counter .value.high { color: var(--danger); }
+    .counter .value.medium { color: var(--warn); }
+    .counter .value.ready { color: var(--ok); }
+
+    .upload-zone {
+      border: 1px dashed var(--border-2);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      text-align: center;
+      background: rgba(17, 17, 19, .8);
+      margin-bottom: 10px;
+    }
+
+    .upload-zone p { margin: 6px 0; color: var(--muted); }
+    .upload-zone .file-chip {
+      margin-top: 8px;
+      display: inline-flex;
+      border: 1px solid rgba(139, 92, 246, .45);
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: #ddd6fe;
+      font-size: 12px;
+      background: rgba(139, 92, 246, .1);
+    }
+
+    .loading {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      background: rgba(17, 17, 19, .8);
+      display: none;
+      margin-bottom: 12px;
+    }
+
+    .loading.active { display: block; }
+
+    .loading ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .loading li {
+      color: var(--muted);
+      font-size: 14px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(24, 24, 27, .5);
+    }
+
+    .loading li.done {
+      color: var(--ok);
+      border-color: rgba(52, 211, 153, .45);
+      background: rgba(16, 185, 129, .08);
+    }
+
+    .results {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: rgba(17, 17, 19, .8);
+      display: none;
+      padding: 12px;
+    }
+
+    .results.active { display: block; }
+
+    .result-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .result-head h3 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: .2px;
+    }
+
+    .result-head small { color: var(--muted-2); }
+
+    .risk-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .risk-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(24, 24, 27, .75);
+    }
+
+    .risk-toggle {
+      inline-size: calc(99.9%);
+      background: transparent;
+      border: 0;
+      color: var(--text);
+      text-align: left;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .risk-index {
+      inline-size: 25px;
+      block-size: 25px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(139, 92, 246, .16);
+      color: #ddd6fe;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .risk-title { font-weight: 600; font-size: 14px; }
+    .risk-level {
+      font-size: 12px;
+      border: 1px solid var(--border-2);
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: var(--muted);
+    }
+    .risk-level.high { color: var(--danger); border-color: rgba(248, 113, 113, .45); }
+    .risk-level.medium { color: var(--warn); border-color: rgba(251, 191, 36, .45); }
+
+    .risk-chevron {
+      color: var(--muted-2);
+      transition: transform .2s ease;
+    }
+
+    .risk-item.open .risk-chevron { transform: rotate(180deg); }
+
+    .risk-details {
+      display: none;
+      padding: 0 12px 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    .risk-item.open .risk-details { display: block; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .detail-block {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      background: rgba(17,17,19,.72);
+    }
+
+    .detail-block h4 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      color: #ddd6fe;
+      letter-spacing: .2px;
+      text-transform: uppercase;
+    }
+
+    .detail-block p { margin: 0; font-size: 13px; }
+
+    .after-demo {
+      margin-top: 16px;
+      border: 1px solid rgba(139, 92, 246, .35);
+      border-radius: var(--radius-md);
+      background: rgba(139, 92, 246, .1);
+      padding: 14px;
+      display: none;
+    }
+
+    .after-demo.active { display: block; }
+
+    .after-demo h3 { margin: 0 0 8px; }
+    .after-demo p { margin: 0 0 10px; color: #ddd6fe; }
+    .after-demo .hero-ctas { margin-bottom: 0; }
+
+    .bento {
+      padding: 24px 0 14px;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: rgba(17, 17, 19, .78);
+      padding: 16px;
+    }
+    
+    .security-card {
+      border-color: rgba(139, 92, 246, .42);
+      box-shadow: 0 10px 30px rgba(124, 58, 237, .16);
+      background: linear-gradient(180deg, rgba(30, 21, 45, .5), rgba(17, 17, 19, .88));
+    }
+
+    .card h3 { margin: 0 0 8px; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); }
+
+    .span-8 { grid-column: span 8; }
+    .span-4 { grid-column: span 4; }
+    .span-6 { grid-column: span 6; }
+    .full-width { grid-column: 1 / -1; }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 6px 10px;
+      background: rgba(24,24,27,.76);
+    }
+
+    .final-cta {
+      padding: 58px 0 74px;
+    }
+
+    .final-box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: radial-gradient(700px 300px at 70% -20%, rgba(139, 92, 246, .24), transparent 60%), var(--surface-2);
+      padding: 28px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .final-box h2 {
+      margin: 0 0 10px;
+      font-size: clamp(26px, 3.2vw, 38px);
+      line-height: 1.1;
+    }
+
+    .final-box p {
+      margin: 0 auto 18px;
+      max-width: 72ch;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 18px 0 24px;
+      color: var(--muted-2);
+      font-size: 13px;
+    }
+
+    .footer-contacts {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 14px;
+    }
+
+    .contacts-label {
+      font-size: 12px;
+      color: var(--muted-2);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(139, 92, 246, .35);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: #ddd6fe;
+      background: rgba(139, 92, 246, .1);
+      transition: .2s ease;
+    }
+
+    .contact-link:hover {
+      border-color: rgba(139, 92, 246, .65);
+      background: rgba(139, 92, 246, .18);
+      transform: translateY(-1px);
+    }
+
+    .footer-wrap {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+      .trust-items { grid-template-columns: 1fr; }
+      .bento-grid { grid-template-columns: 1fr; }
+      .span-8, .span-4, .span-6, .full-width { grid-column: auto; }
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 64px 0 44px; }
+      .hero-ctas { flex-direction: column; }
+      .btn { width: auto; }
+      .counters { grid-template-columns: 1fr 1fr; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .nav-wrap { min-height: 64px; }
+      .footer-wrap { flex-direction: column; }
+      .footer-contacts { gap: 8px; }
+      .nav-actions { width: auto; }
+    }
+  </style>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=109560505','ym');
+ym(109560505,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",accurateTrackBounce:true,trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/109560505" style="position:absolute;left:-9999px;" alt=""/></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</head>
+<body>
+  <header class="site-nav">
+    <div class="container nav-wrap">
+      <a class="brand" href="#">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span>Юридический ОТК</span>
+      </a>
+      <div class="nav-actions">
+        <button class="btn" id="navResultBtn" type="button" hidden>К результату демо</button>
+        <button class="btn" id="navDemoBtn" type="button">Посмотреть демо</button>
+        <a class="btn btn-primary" href="https://t.me/LegalChecker36" target="_blank" rel="noopener noreferrer">Обсудить настройку под свою практику</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Первичный ОТК документа</div>
+          <h1>Первичный контроль юридических документов под вашу практику</h1>
+          <p>Система помогает быстро увидеть возможные риски, спорные условия и слабые места документа. Вместо проверки «с нуля» команда получает первичные карточки с вопросами, которые стоит передать юристу или использовать внутри процесса. Критерии проверки настраиваются под конкретную практику, тип документов и требования клиента.</p>
+          <p class="accent-line">Не поверхностно для всех. Глубоко под вашу практику.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-primary" href="https://t.me/LegalChecker36" target="_blank" rel="noopener noreferrer">Обсудить настройку под свою практику</a>
+            <button class="btn" type="button" id="runDemoBtn">Посмотреть демо</button>
+          </div>
+          <div class="trust-items">
+            <div class="trust-item">Настройка под практику клиента</div>
+            <div class="trust-item">Демо на одном примере документа</div>
+            <div class="trust-item">Можно отправить обезличенный документ</div>
+          </div>
+        </div>
+
+        <div class="demo-card" id="demoCard">
+          <div class="demo-topbar">
+            <div class="mac-dots" aria-hidden="true">
+              <span class="r"></span><span class="y"></span><span class="g"></span>
+            </div>
+            <small>Пример карты рисков · демонстрация на примере договора аренды</small>
+          </div>
+          <div class="demo-body">
+            <div class="demo-note">Это демонстрационный пример. Реальные проверки и другие практики обсуждаются индивидуально. На этой странице документы не загружаются и не обрабатываются.</div>
+
+            <div class="counters">
+              <div class="counter"><div class="label">Файлов</div><div class="value ready" id="filesCount">0</div></div>
+              <div class="counter"><div class="label">Рисков</div><div class="value" id="riskCount">0</div></div>
+              <div class="counter"><div class="label">Высокий</div><div class="value high" id="highCount">0</div></div>
+              <div class="counter"><div class="label">Средний</div><div class="value medium" id="mediumCount">0</div></div>
+            </div>
+
+            <div class="upload-zone" id="uploadZone">
+              <p><strong>Демо-пакет: договор аренды коммерческого помещения</strong></p>
+              <p>Сценарий запускает fake-анализ и показывает механику работы.</p>
+              <span class="file-chip">smart_doc2_dogovor_piterlogistik.docx</span>
+            </div>
+
+            <div class="loading" id="loadingBox" aria-live="polite">
+              <ul id="loadingSteps">
+                <li>Инициализация профиля проверки...</li>
+                <li>Поиск спорных условий аренды...</li>
+                <li>Формирование карты возможных рисков...</li>
+                <li>Подготовка результата для юриста...</li>
+              </ul>
+            </div>
+
+            <section class="results" id="resultBox" aria-label="Результат демо">
+              <div class="result-head">
+                <h3>Карта возможных рисков</h3>
+                <small>5 пунктов для первичной проверки</small>
+              </div>
+              <div class="risk-list" id="riskList"></div>
+            </section>
+
+            <section class="after-demo" id="afterDemoCta">
+              <h3>Хотите настроить ОТК под свои документы?</h3>
+              <p>Демо показывает механику на одном примере. Если у вас есть поток договоров, претензий, исков или внутренних шаблонов — напишите, обсудим настройку под вашу практику.</p>
+              <div class="hero-ctas">
+                <a class="btn btn-primary" href="https://t.me/LegalChecker36" target="_blank" rel="noopener noreferrer">Обсудить настройку под свою практику</a>
+                <button class="btn" type="button" id="afterDemoPreviewBtn">Посмотреть пример проверки</button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bento">
+      <div class="container bento-grid">
+        <article class="card span-8">
+          <h3>Что показывает демо</h3>
+          <p>Демо показывает механику работы Юридического ОТК на одном примере: система выделяет возможные риски, спорные условия и вопросы, которые стоит проверить юристу. Для других практик чек-листы и карточки настраиваются отдельно.</p>
+          <div class="chips">
+            <span class="chip">Чек-листы</span>
+            <span class="chip">Карточки рисков</span>
+            <span class="chip">Связанные нормы</span>
+            <span class="chip">Слабые формулировки</span>
+            <span class="chip">Документы клиента</span>
+            <span class="chip">Внутренние требования</span>
+          </div>
+        </article>
+
+        <article class="card span-4">
+          <h3>Какую боль закрывает ОТК</h3>
+          <p>Первичная проверка юридических документов часто отнимает время у старших юристов и руководителей. Риски ищутся вручную, чек-листы держатся в голове, а качество проверки зависит от конкретного человека. Юридический ОТК помогает превратить первичный контроль в повторяемый процесс.</p>
+          <div class="chips">
+            <span class="chip">Меньше ручной первички</span>
+            <span class="chip">Единый стандарт проверки</span>
+            <span class="chip">Риски видны раньше</span>
+            <span class="chip">Проще передать юристу</span>
+          </div>
+        </article>
+
+        <article class="card span-6">
+          <h3>ОТК под вашу практику</h3>
+          <p>Новая практика подключается через настройку критериев: какие документы смотреть, какие ситуации считать рискованными, какие нормы учитывать и в каком формате показывать результат. Это обсуждается индивидуально до запуска.</p>
+          <div class="chips">
+            <span class="chip">Документы клиента</span>
+            <span class="chip">Типовые ситуации</span>
+            <span class="chip">Чек-листы</span>
+            <span class="chip">Критерии риска</span>
+            <span class="chip">Связанные нормы</span>
+            <span class="chip">Формат карточек</span>
+            <span class="chip">Внутренние требования</span>
+            <span class="chip">Индивидуальная настройка</span>
+          </div>
+        </article>
+
+        <article class="card span-6">
+          <h3>Что вы получаете</h3>
+          <p>На выходе — структурированный список возможных рисков и вопросов к документу: уровень критичности, пояснение, связанная норма и что стоит проверить дальше. Это помогает быстрее понять, где обычные места документа, а где нужна внимательная оценка специалиста.</p>
+        </article>
+
+        <article class="card full-width">
+          <h3>Для кого</h3>
+          <p>Для юристов, предпринимателей и команд, которым нужен первичный контроль документов, материалов или повторяющихся юридических ситуаций перед финальной оценкой специалиста.</p>
+        </article>
+
+        <article class="card full-width security-card">
+          <h3>Контур работы с документами</h3>
+          <p>Демо-страница ничего не загружает: пример работает без обработки реальных документов. Для рабочих проверок можно использовать обезличенную копию документа — без ФИО, реквизитов, адресов, сумм и других чувствительных данных. Проверка может выполняться через российский LLM-контур на базе GigaChat. Доступ к файлам, срок хранения и порядок удаления фиксируются до запуска рабочего режима.</p>
+          <div class="chips">
+            <span class="chip">Демо без загрузки файлов</span>
+            <span class="chip">Обезличивание до анализа</span>
+            <span class="chip">GigaChat-контур</span>
+            <span class="chip">Доступ и удаление фиксируются</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="container">
+        <div class="final-box">
+          <h2>Не поверхностно для всех. Глубоко под вашу практику.</h2>
+          <p>Юридический ОТК настраивается под конкретную практику, документы, чек-листы и требования клиента. Цель — сократить ручную первичную проверку и сделать контроль документов более понятным и повторяемым.</p>
+          <a class="btn btn-primary" href="https://t.me/LegalChecker36" target="_blank" rel="noopener noreferrer">Написать в Telegram</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-contacts">
+      <span class="contacts-label">Контакты</span>
+      <a href="tel:+79601042163" class="contact-link">+7 960 104-21-63</a>
+      <a href="mailto:Legall365@yandex.ru" class="contact-link">Legall365@yandex.ru</a>
+      <a href="https://t.me/LegalChecker36" target="_blank" rel="noopener noreferrer" class="contact-link">Telegram @LegalChecker36</a>
+    </div>
+    <div class="container footer-wrap">
+      <div>© 2026 Юридический ОТК · @LegalChecker36</div>
+      <div>Это инструмент первичной автоматизированной проверки. Он не является юридическим заключением и не подменяет работу юриста. Возможны пропуски и ложные срабатывания.</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const demoData = [
+        {
+          title: "Повышение арендной платы чаще, чем предусмотрено договором",
+          level: "Высокий",
+          norm: "ГК РФ ст. 614",
+          why: "Если порядок изменения арендной платы сформулирован неясно или допускает частый пересмотр, может возникнуть риск непредсказуемого увеличения платежей.",
+          check: "Имеет смысл уточнить, зафиксирован ли порядок расчёта, периодичность пересмотра и требуется ли согласование сторон.",
+          linked: "ГК РФ ст. 614 — условия об арендной плате и порядке её изменения стоит проверять вместе с текстом договора.",
+          discuss: "Можно обсудить, как сформулировать условие об индексации так, чтобы оно было понятным и предсказуемым для сторон."
+        },
+        {
+          title: "Одновременное взыскание неустойки и процентов",
+          level: "Высокий",
+          norm: "ГК РФ ст. 330, 395",
+          why: "Если документ одновременно требует договорную неустойку и проценты за тот же период и то же нарушение, может возникнуть риск двойного начисления ответственности.",
+          check: "Стоит проверить период начисления, основание каждого требования и не дублируют ли они друг друга.",
+          linked: "ГК РФ ст. 330 регулирует неустойку, а ст. 395 — проценты за пользование чужими денежными средствами. Их сочетание стоит оценивать отдельно.",
+          discuss: "Юристу стоит оценить, как безопаснее сформулировать требования и расчёт, чтобы снизить риск спора по размеру начислений."
+        },
+        {
+          title: "Завышенные или спорные требования о компенсации",
+          level: "Средний",
+          norm: "ГК РФ ст. 15, 309",
+          why: "Если компенсация заявлена без понятного расчёта или документов, может возникнуть риск спора о размере и основании требования.",
+          check: "Имеет смысл проверить, есть ли расчёт, подтверждающие документы, связь между нарушением и заявленной суммой.",
+          linked: "ГК РФ ст. 15 связана с убытками, а ст. 309 — с надлежащим исполнением обязательств. Требования о компенсации стоит подтверждать документально.",
+          discuss: "Можно обсудить, какие документы приложить и как описать причинно-следственную связь между нарушением и суммой требования."
+        },
+        {
+          title: "Неясный срок досудебного ответа",
+          level: "Средний",
+          norm: "ГК РФ ст. 309, 450",
+          why: "Если срок ответа или порядок досудебного урегулирования указан неясно, может возникнуть риск спора о соблюдении процедуры.",
+          check: "Стоит проверить, указан ли конкретный срок, способ направления ответа и последствия отсутствия ответа.",
+          linked: "ГК РФ ст. 309 и ст. 450 стоит оценивать вместе с условиями договора и выбранной процедурой урегулирования.",
+          discuss: "Юристу стоит оценить, достаточно ли определённо описан порядок досудебного взаимодействия."
+        },
+        {
+          title: "Недостаточно подтверждены обстоятельства нарушения",
+          level: "Средний",
+          norm: "ГК РФ ст. 309, 614",
+          why: "Если нарушение описано общими словами и не подтверждено актами, перепиской или расчётом, может возникнуть риск слабой доказательной позиции.",
+          check: "Имеет смысл проверить, какие документы подтверждают нарушение, период, сумму и связь с условиями договора.",
+          linked: "ГК РФ ст. 309 и ст. 614 стоит оценивать вместе с условиями договора, актами, расчётами и перепиской сторон.",
+          discuss: "Можно обсудить, какие приложения усилят позицию: расчёт, акт, переписка, уведомления, фотографии или иные подтверждения."
+        }
+      ];
+
+      const runBtn = document.getElementById("runDemoBtn");
+      const navDemoBtn = document.getElementById("navDemoBtn");
+      const navResultBtn = document.getElementById("navResultBtn");
+      const afterDemoPreviewBtn = document.getElementById("afterDemoPreviewBtn");
+      const uploadZone = document.getElementById("uploadZone");
+      const loadingBox = document.getElementById("loadingBox");
+      const loadingSteps = Array.from(document.querySelectorAll("#loadingSteps li"));
+      const resultBox = document.getElementById("resultBox");
+      const riskList = document.getElementById("riskList");
+      const afterDemo = document.getElementById("afterDemoCta");
+
+      const filesCount = document.getElementById("filesCount");
+      const riskCount = document.getElementById("riskCount");
+      const highCount = document.getElementById("highCount");
+      const mediumCount = document.getElementById("mediumCount");
+
+      let launched = false;
+
+      function animateCount(node, target, duration) {
+        const start = Number(node.textContent) || 0;
+        const started = performance.now();
+        const tick = (now) => {
+          const progress = Math.min((now - started) / duration, 1);
+          const value = Math.round(start + (target - start) * progress);
+          node.textContent = String(value);
+          if (progress < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+
+      function renderRisks(items) {
+        riskList.innerHTML = "";
+        items.forEach((item, idx) => {
+          const wrapper = document.createElement("article");
+          wrapper.className = "risk-item";
+
+          const levelClass = item.level === "Высокий" ? "high" : "medium";
+          wrapper.innerHTML = `
+            <button class="risk-toggle" type="button" aria-expanded="false">
+              <span class="risk-index">${idx + 1}</span>
+              <span class="risk-title">${item.title}</span>
+              <span class="risk-level ${levelClass}">${item.level}</span>
+              <span class="risk-chevron">⌄</span>
+            </button>
+            <div class="risk-details">
+              <div class="detail-grid">
+                <div class="detail-block">
+                  <h4>Почему это может быть риск</h4>
+                  <p>${item.why}</p>
+                </div>
+                <div class="detail-block">
+                  <h4>Что стоит проверить</h4>
+                  <p>${item.check}</p>
+                </div>
+                <div class="detail-block">
+                  <h4>Связанная норма</h4>
+                  <p>${item.linked} (${item.norm})</p>
+                </div>
+                <div class="detail-block">
+                  <h4>Что обсудить с юристом</h4>
+                  <p>${item.discuss}</p>
+                </div>
+              </div>
+            </div>
+          `;
+
+          const toggle = wrapper.querySelector(".risk-toggle");
+          const openClose = () => {
+            const isOpen = wrapper.classList.toggle("open");
+            toggle.setAttribute("aria-expanded", String(isOpen));
+          };
+          toggle.addEventListener("click", openClose);
+          toggle.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              openClose();
+            }
+          });
+
+          riskList.appendChild(wrapper);
+        });
+      }
+
+      function runFakeDemo() {
+        if (launched) {
+          resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+          return;
+        }
+        launched = true;
+        runBtn.disabled = true;
+        runBtn.textContent = "Демо запущено";
+        uploadZone.style.display = "none";
+        loadingBox.classList.add("active");
+        resultBox.classList.remove("active");
+        afterDemo.classList.remove("active");
+
+        loadingSteps.forEach((li) => li.classList.remove("done"));
+        let step = 0;
+        const timer = setInterval(() => {
+          if (step < loadingSteps.length) {
+            loadingSteps[step].classList.add("done");
+            step += 1;
+            return;
+          }
+          clearInterval(timer);
+
+          loadingBox.classList.remove("active");
+          renderRisks(demoData);
+          resultBox.classList.add("active");
+          afterDemo.classList.add("active");
+
+          animateCount(filesCount, 1, 600);
+          animateCount(riskCount, 5, 700);
+          animateCount(highCount, 2, 700);
+          animateCount(mediumCount, 3, 700);
+
+          navResultBtn.hidden = false;
+          resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 560);
+      }
+
+      runBtn.addEventListener("click", runFakeDemo);
+      navDemoBtn.addEventListener("click", () => {
+        document.getElementById("demoCard").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      navResultBtn.addEventListener("click", () => {
+        const target = resultBox.classList.contains("active") ? resultBox : document.getElementById("demoCard");
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      afterDemoPreviewBtn.addEventListener("click", () => {
+        resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    })();
+  </script>
+</body>
+</html>
+
